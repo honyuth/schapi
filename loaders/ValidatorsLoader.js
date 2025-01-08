@@ -1,40 +1,50 @@
-const loader           = require('./_common/fileLoader');
-const Pine             = require('qantra-pineapple');
+const loader = require('./_common/fileLoader');
 
-/** 
- * load any file that match the pattern of function file and require them 
+/**
+ * load any file that match the pattern of function file and require them
  * @return an array of the required functions
-*/
+ */
 module.exports = class ValidatorsLoader {
-    constructor({models, customValidators}={}){
-        this.models = models;
-        this.customValidators = customValidators;
+  constructor(responseDispatcher) {
+    this.responseDispatcher = responseDispatcher;
+  }
+
+  parseError = (error) => {
+    const zodErrors = error.errors.map((val) => ({
+      [val.path.join(',')]: val.message,
+    }));
+    return zodErrors.reduce((acc, item) => {
+      const key = Object.keys(item)[0];
+      acc[key] = item[key];
+      return acc;
+    }, {});
+  };
+
+  validate = (schema, data) => {
+    const result = schema.safeParse(data);
+    return result.success ? null : this.parseError(result.error);
+  };
+
+  createValidationErrorsMw = (schema) => (req, res, next) => {
+    const errors = this.validate(schema, req.body);
+    if (errors) {
+      return this.responseDispatcher.dispatch(res, {
+        ok: false,
+        errors: errors,
+      });
     }
-    load(){
+    next();
+  };
 
-        const validators = {};
-
-        /**
-         * load schemes
-         * load models ( passed to the consturctor )
-         * load custom validators
-         */
-        const schemes = loader('./managers/**/*.schema.js');
-
-        Object.keys(schemes).forEach(sk=>{
-            let pine = new Pine({models: this.models, customValidators: this.customValidators});
-            validators[sk] = {};
-            Object.keys(schemes[sk]).forEach(s=>{
-                validators[sk][s] =  async (data)=>{
-                    return (await pine.validate(data, schemes[sk][s]));
-                }
-                /** also exports the trimmer function for the same */
-                validators[sk][`${s}Trimmer`] = async (data)=>{
-                    return (await pine.trim(data, schemes[sk][s]));
-                }
-            });
-        })
-
-        return validators;
-    }
-}
+  load() {
+    /**
+     * load custom validators
+     */
+    const validators = loader('./managers/**/*.schema.js');
+    return {
+      validate: this.validate,
+      createValidationErrorsMw: this.createValidationErrorsMw,
+      ...validators,
+    };
+  }
+};
