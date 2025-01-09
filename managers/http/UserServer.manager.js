@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const { rateLimit } = require('express-rate-limit');
 
 const app = express();
 const swaggerUi = require('swagger-ui-express');
@@ -28,6 +29,14 @@ module.exports = class UserServer {
 
   /** server configs */
   run() {
+    const limiter = rateLimit({
+      windowMs: 10 * 60 * 1000, // 10 minutes
+      max: 100,
+      standardHeaders: true,
+      legacyHeaders: false,
+      // TODO(solo): Add redis store here to persist the rate limit
+    });
+
     app.use(morgan('combined'));
 
     app.use(cors({ origin: '*' }));
@@ -49,7 +58,7 @@ module.exports = class UserServer {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     // register API routes
-    app.use('/api', ApiRouter(this.managers, this.mwsRepo));
+    app.use('/api', limiter, ApiRouter(this.managers, this.mwsRepo));
 
     let server = http.createServer(app);
     server.listen(this.config.dotEnv.USER_PORT, () => {

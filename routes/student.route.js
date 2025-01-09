@@ -1,7 +1,7 @@
 const express = require('express');
 const StudentController = require('../controllers/student.controller');
 
-module.exports = (managers) => {
+module.exports = (managers, mwsRepo) => {
   const router = express.Router({ mergeParams: true });
   const controller = new StudentController(managers);
   const { createValidationErrorsMw, student: validators } = managers.validators;

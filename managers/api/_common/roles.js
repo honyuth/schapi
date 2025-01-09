@@ -17,6 +17,8 @@ const Roles = Object.freeze({
     permissions: [
       { action: 'view', resourceType: 'student' },
       { action: 'view', resourceType: 'student_profile' },
+      { action: 'enroll', resourceType: 'classroom' },
+      { action: 'transfer', resourceType: 'classroom' },
     ],
   },
 });
