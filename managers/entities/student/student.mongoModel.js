@@ -28,11 +28,6 @@ const studentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    school: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'School',
-      required: true,
-    },
     classroom: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Classroom',

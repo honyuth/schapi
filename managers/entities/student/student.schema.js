@@ -24,12 +24,6 @@ module.exports = {
     isActive: z
       .boolean({ message: 'isActive must be a boolean' })
       .default(true),
-    school: z
-      .string({ message: 'School ID is required' })
-      .nonempty({ message: 'School ID cannot be empty' }),
-    classroom: z
-      .string({ message: 'Classroom ID is required' })
-      .nonempty({ message: 'Classroom ID cannot be empty' }),
   }),
 
   updateStudentSchema: z
@@ -56,15 +50,6 @@ module.exports = {
         .string({ message: 'Enrollment date must be a valid date' })
         .optional(),
       isActive: z.boolean({ message: 'isActive must be a boolean' }).optional(),
-      school: z
-        .string({ message: 'School ID must be a string' })
-        .nonempty({ message: 'School ID cannot be empty' })
-        .optional(),
-
-      classroom: z
-        .string({ message: 'Classroom ID must be a string' })
-        .nonempty({ message: 'Classroom ID cannot be empty' })
-        .optional(),
     })
     .refine(
       (data) => Object.values(data).some((value) => value !== undefined),

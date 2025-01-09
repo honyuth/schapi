@@ -7,9 +7,9 @@ const Roles = Object.freeze({
   SCHOOL_ADMIN: {
     name: 'SchoolAdmin',
     permissions: [
-      { action: 'view', resourceTypes: 'student' },
-      { action: 'edit', resourceType: 'student' },
-      { action: 'view', resourceType: 'classroom' },
+      { action: 'view', resourceTypes: 'students' },
+      { action: 'edit', resourceType: 'students' },
+      { action: 'edit', resourceType: 'classrooms' },
     ],
   },
   STUDENT: {

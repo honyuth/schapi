@@ -2,6 +2,7 @@ const Router = require('express');
 const UserRouter = require('./user.route');
 const SchoolRouter = require('./school.route');
 const ClassroomRouter = require('./classroom.route');
+const StudentRouter = require('./student.route');
 const UserController = require('../controllers/user.controller');
 
 module.exports = (managers, mwsRepo) => {
@@ -26,6 +27,7 @@ module.exports = (managers, mwsRepo) => {
 
   /* School routes */
   router.use('/schools/:schoolId', ClassroomRouter(managers, mwsRepo));
+  router.use('/classrooms/:classroomId', StudentRouter(managers, mwsRepo));
 
   return router;
 };
