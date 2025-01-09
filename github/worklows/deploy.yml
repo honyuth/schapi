@@ -23,6 +23,25 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.DO_SSH_PORT || '22' }} ${{ secrets.DO_SSH_USER }}@${{ secrets.DO_SSH_HOST }} << 'EOF'
           cd /src/schapi
+
+          export USER_PORT=${{ secrets.USER_PORT }}
+          export LONG_TOKEN_SECRET=${{ secrets.LONG_TOKEN_SECRET }}
+          export SHORT_TOKEN_SECRET=${{ secrets.SHORT_TOKEN_SECRET }}
+          export NACL_SECRET=${{ secrets.NACL_SECRET }}
+          export SERVICE_NAME=${{ secrets.SERVICE_NAME }}
+          export MONGO_URI=${{ secrets.MONGO_URI }}
+          export NODE_ENV=${{ secrets.NODE_ENV }}
+
+          cat <<EOT > .env
+              USER_PORT=\$USER_PORT
+              LONG_TOKEN_SECRET=\$LONG_TOKEN_SECRET
+              SHORT_TOKEN_SECRET=\$SHORT_TOKEN_SECRET
+              NACL_SECRET=\$NACL_SECRET
+              SERVICE_NAME=\$SERVICE_NAME
+              MONGO_URI=\$MONGO_URI
+              NODE_ENV=\$NODE_ENV
+              EOT
+
           git pull origin main
           docker-compose down
           docker-compose up --build -d
