@@ -2,6 +2,7 @@ const MiddlewaresLoader = require('./MiddlewaresLoader');
 const ApiHandler = require('../managers/api/Api.manager');
 const LiveDB = require('../managers/live_db/LiveDb.manager');
 const UserServer = require('../managers/http/UserServer.manager');
+const Seeder = require('../managers/seed/seed.manager');
 const ResponseDispatcher = require('../managers/response_dispatcher/ResponseDispatcher.manager');
 const VirtualStack = require('../managers/virtual_stack/VirtualStack.manager');
 const ValidatorsLoader = require('./ValidatorsLoader');
@@ -76,6 +77,7 @@ module.exports = class ManagersLoader {
     this.managers.mongo = this.mongomodels;
     console.log(responseDispatcher);
     this.managers.validators = new ValidatorsLoader(responseDispatcher).load();
+    this.managers.seeder = new Seeder(this.mongomodels);
 
     return this.managers;
   }

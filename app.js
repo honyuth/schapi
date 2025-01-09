@@ -24,7 +24,14 @@ const cortex = new Cortex({
   idlDelay: '200ms',
 });
 
+
+
 const managersLoader = new ManagersLoader({ config, cache, cortex });
 const managers = managersLoader.load();
+
+// seed some data in development
+if(config.dotEnv.NODE_ENV === 'development' && config.dotEnv.SEED_DB) {
+  managers.seeder.run();
+}
 
 managers.userServer.run();
