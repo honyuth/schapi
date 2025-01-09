@@ -9,9 +9,6 @@ module.exports = {
       .number({ message: 'Capacity is required' })
       .int({ message: 'Capacity must be an integer' })
       .min(1, { message: 'Capacity must be at least 1' }),
-    school: z
-      .string({ message: 'School ID is required' })
-      .nonempty({ message: 'School ID cannot be empty' }),
   }),
 
   updateClassroomSchema: z
@@ -24,10 +21,6 @@ module.exports = {
         .number({ message: 'Capacity must be a number' })
         .int({ message: 'Capacity must be an integer' })
         .min(1, { message: 'Capacity must be at least 1' })
-        .optional(),
-      school: z
-        .string({ message: 'School ID must be a string' })
-        .nonempty({ message: 'School ID cannot be empty' })
         .optional(),
     })
     .refine(

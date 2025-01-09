@@ -1,6 +1,7 @@
 const Router = require('express');
 const UserRouter = require('./user.route');
 const SchoolRouter = require('./school.route');
+const ClassroomRouter = require('./classroom.route');
 const UserController = require('../controllers/user.controller');
 
 module.exports = (managers, mwsRepo) => {
@@ -22,6 +23,9 @@ module.exports = (managers, mwsRepo) => {
   router.use(mwsRepo.authentication);
   router.use('/admin', UserRouter(managers, mwsRepo));
   router.use('/admin', SchoolRouter(managers, mwsRepo));
+
+  /* School routes */
+  router.use('/schools/:schoolId', ClassroomRouter(managers, mwsRepo));
 
   return router;
 };
