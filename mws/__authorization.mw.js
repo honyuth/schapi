@@ -6,7 +6,7 @@ module.exports =
       return managers.responseDispatcher.dispatch(res, {
         ok: false,
         code: 401,
-        errors: 'Operation not unauthorized',
+        message: 'You are not authorized to perform this operation',
       });
     }
 
@@ -28,7 +28,7 @@ module.exports =
       return managers.responseDispatcher.dispatch(res, {
         ok: false,
         code: 403,
-        errors: 'Operation not unauthorized',
+        message: 'You are not authorized to perform this operation',
       });
     }
 

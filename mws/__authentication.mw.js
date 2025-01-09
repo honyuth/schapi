@@ -34,12 +34,14 @@ module.exports = ({ meta, config, managers }) => {
       const { password: _, ...userWithoutPassword } = currentUser._doc;
       req.currentUser = {
         ...userWithoutPassword,
-        permissions: Roles[currentUser.role].permissions,
+        permissions: Object.values(Roles).find(
+          (role) => role.name === currentUser.role,
+        ).permissions,
       };
 
       next();
     } catch (err) {
-      console.log('failed to decode-2');
+      console.log('failed to decode-2', err);
       return managers.responseDispatcher.dispatch(res, {
         ok: false,
         code: 401,

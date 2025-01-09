@@ -2,7 +2,14 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const swaggerUi = require('swagger-ui-express');
 const ApiRouter = require('../../routes');
+
+const fs = require('fs');
+const YAML = require('yaml');
+
+const file = fs.readFileSync('docs/api.yaml', 'utf8');
+const swaggerDocument = YAML.parse(file);
 
 module.exports = class UserServer {
   constructor({ config, managers, mwsRepo }) {
@@ -33,6 +40,9 @@ module.exports = class UserServer {
     /** a single middleware to handle all */
     //TODO(solo): Figure out what this is trying to do
     // app.all('/api/:moduleName/:fnName', this.userApi.mw);
+
+    // Middleware to serve Swagger UI
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     // register API routes
     app.use('/api', ApiRouter(this.managers, this.mwsRepo));

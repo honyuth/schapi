@@ -88,7 +88,7 @@ module.exports = class UserController {
 
     return this.managers.responseDispatcher.dispatch(res, {
       ok: true,
-      data: this.formatUser(updatedUser),
+      data: { user: this.formatUser(updatedUser) },
     });
   };
 

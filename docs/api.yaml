@@ -1,0 +1,396 @@
+openapi: 3.0.3
+info:
+  title: School Management API
+  version: 1.0.0
+  description: API for managing a school
+servers:
+  - url: https://locahost:4000/api
+    description: localhost
+
+components:
+  parameters:
+    token:
+      name: token
+      in: header
+      required: true
+      schema:
+        type: string
+        example: 'jwt-token-sample'
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 677f058c326f46dd341d9dc5
+        username:
+          type: string
+          example: solo
+        email:
+          type: string
+          example: test2@gmail.com
+        role:
+          type: string
+          example: SuperAdmin
+        isSuperAdmin:
+          type: boolean
+          example: false
+        deleted:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-01-08T23:09:00.023Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2025-01-09T00:28:28.491Z
+        __v:
+          type: integer
+          example: 0
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: solo
+        password:
+          type: string
+          example: love&light!
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyS2V5Ijoic29sbyIsInVzZXJJZCI6IjY3N2YwNThjMzI2ZjQ2ZGQzNDFkOWRjNSIsImlhdCI6MTczNjM4MjU0MywiZXhwIjoxODMxMDU1MzQzfQ.abrLTB3cGvP6TgFzU5aLNn2mtEsh4Oy4sl-kr4HPBKc
+        errors:
+          type: array
+          items:
+            type: string
+          example: []
+        message:
+          type: string
+          example: ''
+    ErrorResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        data:
+          type: object
+          example: {}
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            field1: 'field1 is required'
+            field2: 'field2 is required'
+        message:
+          type: string
+          example: ''
+    MessageResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        data:
+          type: object
+          example: {}
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+        message:
+          type: string
+          example: 'Something happened'
+paths:
+  /auth/login:
+    post:
+      summary: Login a user
+      description: Authenticate a user with their username and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+  /api/admin/users/{id}:
+    patch:
+      summary: Update a user by ID
+      description: Updates an existing user's details. Partial updates are supported.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            example: 677f058c326f46dd341d9dc5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: test_updated
+                password:
+                  type: string
+                  example: updated&secure!
+                role:
+                  type: string
+                  enum:
+                    - SuperAdmin
+                    - SchoolAdmin
+                    - Student
+                  example: SchoolAdmin
+                email:
+                  type: string
+                  format: email
+                  example: updatedemail@gmail.com
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ''
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  data:
+                    type: object
+                    example: {}
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ['Invalid email format']
+                  message:
+                    type: string
+                    example: 'Validation failed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  data:
+                    type: object
+                    example: {}
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ['User not found']
+                  message:
+                    type: string
+                    example: ''
+    get:
+      summary: Get a user by ID
+      description: Retrieve a specific user by their unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            example: 677f058c326f46dd341d9dc5
+      responses:
+        '200':
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ''
+        '404':
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+    delete:
+      summary: Delete a user by ID
+      description: Delete a specific user by their unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            example: 677f058c326f46dd341d9dc5
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '404':
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+  /api/admin/users:
+    post:
+      summary: Create a new user
+      description: Creates a new user with the provided details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: test
+                password:
+                  type: string
+                  example: test&test!
+                role:
+                  type: string
+                  enum:
+                    - SuperAdmin
+                    - SchoolAdmin
+                    - Student
+                  example: SchoolAdmin
+                email:
+                  type: string
+                  format: email
+                  example: test222@gmail.com
+              required:
+                - username
+                - password
+                - role
+                - email
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ''
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  data:
+                    type: object
+                    example: {}
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ['Email already exists', 'Invalid role']
+                  message:
+                    type: string
+                    example: 'Validation failed'
