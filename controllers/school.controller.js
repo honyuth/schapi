@@ -1,11 +1,6 @@
 const ApiController = require('./common/api.controller');
 
 module.exports = class SchoolController extends ApiController {
-  formatSchool = (school) => {
-    const { _id: id, ...schoolWithoutId } = school._doc;
-    return { id, ...schoolWithoutId };
-  };
-
   createSchool = async (req, res) => {
     const { name, address, phone, email, establishedYear } = req.body;
 
@@ -22,7 +17,7 @@ module.exports = class SchoolController extends ApiController {
 
     return this.managers.responseDispatcher.dispatch(res, {
       ok: true,
-      data: { school: this.formatSchool(newSchool) },
+      data: { school: this.formatResponse(newSchool) },
     });
   };
 
@@ -53,7 +48,7 @@ module.exports = class SchoolController extends ApiController {
 
     return this.managers.responseDispatcher.dispatch(res, {
       ok: true,
-      data: { school: this.formatSchool(updatedSchool) },
+      data: { school: this.formatResponse(updatedSchool) },
     });
   };
 
@@ -81,7 +76,7 @@ module.exports = class SchoolController extends ApiController {
 
     return this.managers.responseDispatcher.dispatch(res, {
       ok: true,
-      data: { schools: schools.map(this.formatSchool) },
+      data: { schools: schools.map(this.formatResponse) },
     });
   };
 
@@ -100,7 +95,7 @@ module.exports = class SchoolController extends ApiController {
 
     return this.managers.responseDispatcher.dispatch(res, {
       ok: true,
-      data: { school: this.formatSchool(school) },
+      data: { school: this.formatResponse(school) },
     });
   };
 };
