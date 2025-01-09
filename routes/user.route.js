@@ -1,8 +1,10 @@
 const Router = require('express');
 const UserController = require('../controllers/user.controller');
 
-module.exports = (managers) => {
+module.exports = (managers, mwsRepo) => {
   const router = Router();
+  router.use(mwsRepo.authorization('edit', 'users'));
+
   const controller = new UserController(managers);
   const { createValidationErrorsMw, user: userValidators } =
     managers.validators;

@@ -1,12 +1,8 @@
 const bcrypt = require('bcrypt');
 const Roles = require('../managers/api/_common/roles');
+const ApiController = require('./common/api.controller');
 
-module.exports = class UserController {
-  constructor(managers) {
-    this.managers = managers;
-    this.db = managers.mongo;
-  }
-
+module.exports = class UserController extends ApiController {
   formatUser = (user) => {
     const { password: _password, _id: id, ...userWithoutPassword } = user._doc;
     return { id, ...userWithoutPassword };

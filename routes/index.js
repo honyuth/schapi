@@ -1,5 +1,6 @@
 const Router = require('express');
 const UserRouter = require('./user.route');
+const SchoolRouter = require('./school.route');
 const UserController = require('../controllers/user.controller');
 
 module.exports = (managers, mwsRepo) => {
@@ -18,8 +19,9 @@ module.exports = (managers, mwsRepo) => {
   );
 
   /* Admin routes */
-  router.use([mwsRepo.authentication, mwsRepo.authorization('edit', 'users')]);
-  router.use('/admin', UserRouter(managers));
+  router.use(mwsRepo.authentication);
+  router.use('/admin', UserRouter(managers, mwsRepo));
+  router.use('/admin', SchoolRouter(managers, mwsRepo));
 
   return router;
 };
