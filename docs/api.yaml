@@ -63,7 +63,6 @@ components:
       required:
         - username
         - password
-
     LoginResponse:
       type: object
       properties:
@@ -121,6 +120,140 @@ components:
         message:
           type: string
           example: 'Something happened'
+    Student:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the student
+          example: "677ffc43b3083e2ff276f230"
+        authProfile:
+          type: string
+          description: Reference to the user's authentication profile
+          example: "677f058c326f46dd341d9dc5"
+        firstName:
+          type: string
+          description: First name of the student
+          example: "first student"
+        lastName:
+          type: string
+          description: Last name of the student
+          example: "last student"
+        dateOfBirth:
+          type: string
+          format: date-time
+          description: Date of birth of the student
+          example: "1993-09-06T00:00:00.000Z"
+        isActive:
+          type: boolean
+          description: Indicates whether the student is currently active
+          example: true
+        classroom:
+          type: string
+          description: Reference to the classroom the student belongs to
+          example: "677ff5e52f28a85c389f9268"
+        createdBy:
+          type: string
+          description: User who created the student's profile
+          example: "677f058c326f46dd341d9dc5"
+        enrollmentDate:
+          type: string
+          format: date-time
+          description: The date the student was enrolled
+          example: "2025-01-09T16:41:39.726Z"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the student's record was created
+          example: "2025-01-09T16:41:39.728Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the student's record was last updated
+          example: "2025-01-09T16:47:03.226Z"
+    School:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the school
+          example: "677fdfdcf47aee8ee704b5a6"
+        name:
+          type: string
+          description: Name of the school
+          example: "North Bridge"
+        address:
+          type: string
+          description: Address of the school
+          example: "Kampala, Uganda"
+        email:
+          type: string
+          format: email
+          description: Contact email for the school
+          example: "admin@northbridge.ac.ug"
+        isActive:
+          type: boolean
+          description: Indicates whether the school is currently active
+          example: true
+        createdBy:
+          type: string
+          description: User who created the school's profile
+          example: "677f058c326f46dd341d9dc5"
+        classrooms:
+          type: array
+          description: List of classrooms associated with the school
+          items:
+            type: string
+          example: []
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the school's record was created
+          example: "2025-01-09T14:40:28.476Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the school's record was last updated
+          example: "2025-01-09T14:41:19.481Z"
+    Classroom:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the classroom
+          example: "677ff5b82f28a85c389f9264"
+        name:
+          type: string
+          description: Name of the classroom
+          example: "Primary One1"
+        capacity:
+          type: integer
+          description: The maximum number of students the classroom can hold
+          example: 200
+        school:
+          type: string
+          description: Reference to the school the classroom belongs to
+          example: "677fdfdcf47aee8ee704b5a6"
+        createdBy:
+          type: string
+          description: User who created the classroom
+          example: "677f058c326f46dd341d9dc5"
+        students:
+          type: array
+          description: List of students associated with the classroom
+          items:
+            type: string
+          example: []
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the classroom record was created
+          example: "2025-01-09T16:13:44.146Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the classroom record was last updated
+          example: "2025-01-09T16:13:44.146Z"
 paths:
   /auth/login:
     post:
@@ -396,3 +529,644 @@ paths:
                   message:
                     type: string
                     example: 'Validation failed'
+  /api/admin/schools:
+    post:
+      summary: Create a new school
+      description: Add a new school to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the school
+                  example: "North Bridge"
+                address:
+                  type: string
+                  description: Address of the school
+                  example: "Kampala"
+                email:
+                  type: string
+                  format: email
+                  description: Contact email for the school
+                  example: "admin@northbridge.ac.ug"
+              required:
+                - name
+                - address
+                - email
+      responses:
+        '201':
+          description: School created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      school:
+                        $ref: '#/components/schemas/School'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ""
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Name is required", "Email is invalid"]
+                  message:
+                    type: string
+                    example: "Validation failed"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+    get:
+      summary: Get all schools
+      description: Retrieve a list of all schools.
+      responses:
+        '200':
+          description: List of schools retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      schools:
+                        type: array
+                        description: List of schools
+                        items:
+                          $ref: '#/components/schemas/School'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ""
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+  /api/admin/schools/{schoolId}:
+    patch:
+      summary: Update a school by ID
+      description: Update an existing school's details.
+      parameters:
+        - name: schoolId
+          in: path
+          required: true
+          description: The unique identifier of the school to update
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the school
+                  example: "Updated School Name"
+                address:
+                  type: string
+                  description: Address of the school
+                  example: "Updated Address"
+                email:
+                  type: string
+                  format: email
+                  description: Contact email for the school
+                  example: "updated@school.com"
+                isActive:
+                  type: boolean
+                  description: Indicates whether the school is active
+                  example: true
+              
+              description: At least one field must be provided for an update.
+      responses:
+        '200':
+          description: School updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      school:
+                        $ref: '#/components/schemas/School'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: "School updated successfully"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Invalid email format", "Name must not be empty"]
+                  message:
+                    type: string
+                    example: "Validation failed"
+        '404':
+          description: School not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["School not found"]
+                  message:
+                    type: string
+                    example: "School with the given ID does not exist"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+    delete:
+      summary: Delete a school by ID
+      description: Remove a school from the system using its unique identifier.
+      parameters:
+        - name: schoolId
+          in: path
+          required: true
+          description: The unique identifier of the school to delete
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+      responses:
+        '200':
+          description: School deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "School deleted successfully"
+        '404':
+          description: School not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["School not found"]
+                  message:
+                    type: string
+                    example: "School with the given ID does not exist"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+  /api/schools/{schoolId}/classrooms:
+    post:
+      summary: Create a new classroom
+      description: Add a new classroom to the system.
+      parameters:
+        - name: schoolId
+          in: path
+          required: true
+          description: The unique identifier of the school
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the classroom
+                  example: "Primary one"
+                capacity:
+                  type: number
+                  description: Number of accepted students
+                  example: 200
+              required:
+                - name
+                - capacity
+      responses:
+        '201':
+          description: Classroom created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      school:
+                        $ref: '#/components/schemas/Classroom'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ""
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: {"field1": "Name is required", "field2": "is invalid"}
+                  message:
+                    type: string
+                    example: "Validation failed"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+    get:
+      summary: Get all classrooms
+      description: Retrieve a list of all classrooms.
+      parameters:
+        - name: schoolId
+          in: path
+          required: true
+          description: The unique identifier of the school
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+      responses:
+        '200':
+          description: List of classrooms that belong to a school retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      schools:
+                        type: array
+                        description: List of classrooms
+                        items:
+                          $ref: '#/components/schemas/Classroom'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: ""
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+  /api/schools/{schoolId}/classrooms/{classroomId}:
+    patch:
+      summary: Update a classroom by ID
+      description: Update an existing classroom's details.
+      parameters:
+        - name: schoolId
+          in: path
+          required: true
+          description: The unique identifier of the school
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+        - name: classroomId
+          in: path
+          required: true
+          description: The unique identifier of the classroom to update
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the classroom
+                  example: "Updated School Name"
+                capacity:
+                  type: string
+                  description: capacity of the classroom
+                  example: "Updated capacity"
+              
+              description: At least one field must be provided for an update.
+      responses:
+        '200':
+          description: Classroom updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      school:
+                        $ref: '#/components/schemas/Classroom'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: []
+                  message:
+                    type: string
+                    example: "Classroom updated successfully"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: [{"field":"Invalid email format"}]
+                  message:
+                    type: string
+                    example: "Validation failed"
+        '404':
+          description: Classroom not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["School not found"]
+                  message:
+                    type: string
+                    example: "School with the given ID does not exist"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+    delete:
+      summary: Delete a Classroom by ID
+      description: Remove a classroom from the system using its unique identifier.
+      parameters:
+        - name: schoolId
+          in: path
+          required: true
+          description: The unique identifier of the school
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+        - name: classroomId
+          in: path
+          required: true
+          description: The unique identifier of the classroom to update
+          schema:
+            type: string
+            example: "677fdfdcf47aee8ee704b5a6"
+      responses:
+        '200':
+          description: Classroom deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Classroom deleted successfully"
+        '404':
+          description: Classroom not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["School not found"]
+                  message:
+                    type: string
+                    example: "School with the given ID does not exist"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Internal server error"]
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"

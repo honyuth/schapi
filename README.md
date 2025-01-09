@@ -48,6 +48,13 @@ Visit the following endpoints:
 	• API Docs (Swagger UI): http://localhost:4000/api-docs
 	• Main API Route: http://localhost:4000/api
 
+
+## Testing the endpoint
+
+- Use the seed data provided by `seed.manager` to test the API endpoint
+- Create a token by login in a test user
+- Use the created token to hit the other endpoints according to the documentaiton
+
 ## Deployment
 
 This App is hosted at  http://46.101.220.126:4000/api-docs/
@@ -64,4 +71,6 @@ This App is hosted at  http://46.101.220.126:4000/api-docs/
 To further imporve the codebase we should( I didn't have enough time):
 - Write integration and e2e tests
 - Make sure the github action to deploy the service works
+- Enroll and transfer students
+- Document student endpoint
 
