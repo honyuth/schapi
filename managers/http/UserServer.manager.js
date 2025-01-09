@@ -5,10 +5,11 @@ const app = express();
 const ApiRouter = require('../../routes');
 
 module.exports = class UserServer {
-  constructor({ config, managers }) {
+  constructor({ config, managers, mwsRepo }) {
     this.config = config;
     this.userApi = managers.userApi;
     this.managers = managers;
+    this.mwsRepo = mwsRepo;
   }
 
   /** for injecting middlewares */
@@ -34,7 +35,7 @@ module.exports = class UserServer {
     // app.all('/api/:moduleName/:fnName', this.userApi.mw);
 
     // register API routes
-    app.use('/api', ApiRouter(this.managers));
+    app.use('/api', ApiRouter(this.managers, this.mwsRepo));
 
     let server = http.createServer(app);
     server.listen(this.config.dotEnv.USER_PORT, () => {

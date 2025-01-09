@@ -71,6 +71,7 @@ module.exports = class ManagersLoader {
     this.managers.userServer = new UserServer({
       config: this.config,
       managers: this.managers,
+      mwsRepo: mwsRepo,
     });
     this.managers.mongo = this.mongomodels;
     console.log(responseDispatcher);

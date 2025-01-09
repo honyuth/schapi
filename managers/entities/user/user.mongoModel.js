@@ -9,8 +9,8 @@ const userSchema = new mongoose.Schema(
     name: { type: String },
     role: {
       type: String,
-      enum: Object.values(Roles),
-      default: Roles.STUDENT,
+      enum: Object.values(Roles).map((role) => role.name),
+      default: Roles.STUDENT.name,
       required: true,
     },
     isSuperAdmin: { type: Boolean, default: false },

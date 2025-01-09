@@ -22,11 +22,17 @@ module.exports = {
     role: z
       .string({ message: 'Role is required' })
       .nonempty({ message: 'Role is required' })
-      .refine((role) => Object.values(Roles).includes(role), {
-        message: `Invalid role, must be one of: ${Object.values(Roles).join(
-          ', ',
-        )}`,
-      }),
+      .refine(
+        (role) =>
+          Object.values(Roles)
+            .map((r) => r.name)
+            .includes(role),
+        {
+          message: `Invalid role, must be one of: ${Object.values(Roles)
+            .map((r) => r.name)
+            .join(', ')}`,
+        },
+      ),
     password: z
       .string({ message: 'Password is required' })
       .nonempty('Password is required')
@@ -54,11 +60,17 @@ module.exports = {
       role: z
         .string({ message: 'Role is required' })
         .nonempty({ message: 'Role is required' })
-        .refine((role) => Object.values(Roles).includes(role), {
-          message: `Invalid role, must be one of: ${Object.values(Roles).join(
-            ', ',
-          )}`,
-        })
+        .refine(
+          (role) =>
+            Object.values(Roles)
+              .map((r) => r.name)
+              .includes(role),
+          {
+            message: `Invalid role, must be one of: ${Object.values(Roles)
+              .map((r) => r.name)
+              .join(', ')}`,
+          },
+        )
         .optional(),
       password: z
         .string({ message: 'Password is required' })

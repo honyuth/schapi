@@ -48,7 +48,7 @@ module.exports = class UserController {
     const { username, password, role, email } = req.body;
     const user = new this.db.user({
       email,
-      isSuperAdmin: role === Roles.SCHOOL_ADMIN,
+      isSuperAdmin: role === Roles.SUPER_ADMIN.name,
       password: await bcrypt.hash(password, 10),
       role,
       username,
@@ -71,8 +71,8 @@ module.exports = class UserController {
         ...(password && { password: await bcrypt.hash(password, 10) }),
         ...(role && { role }),
         ...(email && { email }),
-        ...(typeof role !== 'undefined' && {
-          isSuperAdmin: role === Roles.SCHOOL_ADMIN,
+        ...(role && {
+          isSuperAdmin: role === Roles.SUPER_ADMIN.name,
         }),
       },
       { new: true, runValidators: true },
