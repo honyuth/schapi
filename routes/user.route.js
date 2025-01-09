@@ -1,8 +1,8 @@
-const Router = require('express');
+const express = require('express');
 const UserController = require('../controllers/user.controller');
 
 module.exports = (managers, mwsRepo) => {
-  const router = Router();
+  const router = express.Router();
   router.use(mwsRepo.authorization('edit', 'users'));
 
   const controller = new UserController(managers);

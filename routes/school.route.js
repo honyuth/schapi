@@ -1,8 +1,8 @@
-const Router = require('express');
+const express = require('express');
 const SchoolController = require('../controllers/school.controller');
 
 module.exports = (managers, mwsRepo) => {
-  const router = Router();
+  const router = express.Router();
   const controller = new SchoolController(managers);
   const { createValidationErrorsMw, school: validators } = managers.validators;
 
