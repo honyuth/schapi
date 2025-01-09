@@ -1,6 +1,8 @@
 const http = require('http');
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
+
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 const ApiRouter = require('../../routes');
@@ -26,6 +28,8 @@ module.exports = class UserServer {
 
   /** server configs */
   run() {
+    app.use(morgan('combined'));
+
     app.use(cors({ origin: '*' }));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));

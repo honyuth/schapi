@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      target: ${NODE_ENV}
+    restart: always
+    container_name: schapi
+    depends_on:
+      - redis
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PORT: ${USER_PORT}
+      LONG_TOKEN_SECRET: ${LONG_TOKEN_SECRET}
+      SHORT_TOKEN_SECRET: ${SHORT_TOKEN_SECRET}
+      MONGO_URI: ${MONGO_URI}
+      NACL_SECRET: ${NACL_SECRET}
+      REDIS_URI: redis://redis:6379
+    env_file:
+      - ./.env
+    ports:
+      - ${USER_PORT}:${USER_PORT}
+    networks:
+      - schapi
+    volumes:
+      - .:/node/app
+      - /node/app/node_modules
+  redis:
+    image: redis:alpine
+    container_name: schapi-redis
+    ports:
+      - '6379:6379'
+    networks:
+      - schapi
+    command: ['redis-server', '--save', '20', '1', '--loglevel', 'warning']
+
+  caddy:
+    image: caddy:alpine
+    container_name: schapi-caddy-server
+    depends_on:
+      - app
+    environment:
+      PORT: ${USER_PORT}
+    ports:
+      - 80:80
+    volumes:
+      - caddy-config:/config
+      - caddy-data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - schapi
+
+volumes:
+  pg-data:
+  caddy-config:
+  caddy-data:
+
+networks:
+  schapi:

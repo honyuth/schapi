@@ -1,0 +1,8 @@
+{
+  # Global options
+  auto_https off
+}
+
+http://localhost {
+  reverse_proxy app:${USER_PORT}
+}

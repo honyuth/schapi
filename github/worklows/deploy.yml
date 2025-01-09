@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to ocean
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DO_SSH_KEY }}
+
+      - name: Deploy app
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.DO_SSH_PORT || '22' }} ${{ secrets.DO_SSH_USER }}@${{ secrets.DO_SSH_HOST }} << 'EOF'
+          cd /src/schapi
+          git pull origin main
+          docker-compose down
+          docker-compose up --build -d
+          EOF
