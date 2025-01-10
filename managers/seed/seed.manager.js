@@ -11,7 +11,6 @@ module.exports = class SeedManager {
   async run() {
     try {
 
-           // Seed logic as in the previous example
             await this.db.user.deleteMany();
             await this.db.school.deleteMany();
             await this.db.classroom.deleteMany();
@@ -26,6 +25,7 @@ module.exports = class SeedManager {
             email: 'admin1@school.com',
             password: await bcrypt.hash('password1', 10), 
             role: Roles.SUPER_ADMIN.name,
+            isSuperAdmin: true,
           },
           {
             username: 'admin2',
