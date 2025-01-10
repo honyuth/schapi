@@ -284,7 +284,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-  /api/admin/users/{id}:
+  /admin/users/{id}:
     patch:
       summary: Update a user by ID
       description: Updates an existing user's details. Partial updates are supported.
@@ -451,7 +451,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
-  /api/admin/users:
+  /admin/users:
     post:
       summary: Create a new user
       description: Creates a new user with the provided details.
@@ -529,7 +529,7 @@ paths:
                   message:
                     type: string
                     example: 'Validation failed'
-  /api/admin/schools:
+  /admin/schools:
     post:
       summary: Create a new school
       description: Add a new school to the system.
@@ -665,7 +665,7 @@ paths:
                   message:
                     type: string
                     example: "An unexpected error occurred"
-  /api/admin/schools/{schoolId}:
+  /admin/schools/{schoolId}:
     patch:
       summary: Update a school by ID
       description: Update an existing school's details.
@@ -842,7 +842,7 @@ paths:
                   message:
                     type: string
                     example: "An unexpected error occurred"
-  /api/schools/{schoolId}/classrooms:
+  /schools/{schoolId}/classrooms:
     post:
       summary: Create a new classroom
       description: Add a new classroom to the system.
@@ -988,7 +988,7 @@ paths:
                   message:
                     type: string
                     example: "An unexpected error occurred"
-  /api/schools/{schoolId}/classrooms/{classroomId}:
+  /schools/{schoolId}/classrooms/{classroomId}:
     patch:
       summary: Update a classroom by ID
       description: Update an existing classroom's details.
